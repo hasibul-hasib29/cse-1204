@@ -15,13 +15,14 @@ private:
 public:
     void SetData(string, string, string, string);
     void GetData();
-    void Update();
-    void Delete();
+    
+    string GetName(){ return name;}
+    string GetRoll(){ return roll;}
+    string GetDept(){ return dept;}
+    string GetCgpa(){ return cgpa;}
 
-    string GetRoll()
-    {
-        return roll;
-    }
+
+   
 };
 
 bool aliveUpdate(string r)
@@ -29,9 +30,28 @@ bool aliveUpdate(string r)
     for (auto &i : st)
     {
         if (i.GetRoll() == r)
-        {   
-            string n = "0";
-            i.SetData(n, n, n, n);
+        {
+            cout << "Enter student name: ";
+            string name;
+            cin.ignore();
+            getline(cin, name);
+            cout << "enter student roll: ";
+            string roll;
+            cin >> roll;
+            cout << "enter department: ";
+            string dept;
+            cin.ignore();
+            getline(cin, dept);
+            cout << "enter cgpa: ";
+            string cgpa;
+            cin >> cgpa;
+            ofstream file("student.txt", ios::app);
+            file << name << endl;
+            file << roll << endl;
+            file << dept << endl;
+            file << cgpa << endl;
+            i.SetData(name, roll, dept , cgpa);
+
             return true;
         }
     }
@@ -43,11 +63,25 @@ bool alive(string r)
 {
     for (auto &i : st)
     {
-        if (i.GetRoll() == r){
+        if (i.GetRoll() == r)
+        {
             i.GetData();
             return true;
         }
+    }
+
+    return false;
+}
+bool aliveDead(string r)
+{
+    for (int i=0; i<st.size(); i++)
+    {
+        if (st[i].GetRoll() == r)
+        {   
             
+            st.erase(st.begin()+i);
+            return true;
+        }
     }
 
     return false;
@@ -85,19 +119,29 @@ void Update()
     cin >> r;
     if (aliveUpdate(r))
     {
-        StdData();
+        cout<<"Update successfull!!"<<endl;
     }
-    else cout<<"This roll number isn't exist!!"<<endl;
+    else
+        cout << "This roll number isn't exist!!" << endl;
 }
 void Search()
 {
     string roll;
-    cout<<"Enter roll to update: ";
-    cin>>roll;
-    if(alive(roll)){
-        
+    cout << "Enter roll to update: ";
+    cin >> roll;
+    if (alive(roll))
+    {
     }
-    else cout<<"This roll number isn't exist!!"<<endl;
+    else
+        cout << "This roll number isn't exist!!" << endl;
+}
+void Delete()
+{
+    string st;
+    cout << "enter student's roll to delete id: ";
+    cin >> st;
+    if(aliveDead(st)) cout<<"Delete completed"<<endl;
+    else cout<<"Failed!!"<<endl;
 }
 int main()
 {
@@ -127,6 +171,7 @@ int main()
         cout << "1. Enter student data" << endl;
         cout << "2. search" << endl;
         cout << "3. update" << endl;
+        cout << "4. Delete" << endl;
         cout << "\n====================\n";
         cin >> choice;
 
@@ -152,7 +197,22 @@ int main()
             Update();
             break;
         }
+        case 4: {Delete(); break;}
         }
+    }
+
+
+    // updated and all student info into file
+    ofstream output ("student.txt");
+    for(int i=0; i<st.size(); i++){
+        string name = st[i].GetName();
+        string roll = st[i].GetRoll();
+        string dept = st[i].GetDept();
+        string cgpa = st[i].GetCgpa();
+        output<<name<<endl;
+        output<<roll<<endl;
+        output<<dept<<endl;
+        output<<cgpa<<endl;
     }
 
     return 0;
@@ -167,11 +227,11 @@ void Student::SetData(string n, string r, string d, string c)
 }
 
 void Student::GetData()
-{   
-    cout<<"\n~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
+{
+    cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
     cout << "NAME  : " << name << endl;
     cout << "ROLL  : " << roll << endl;
     cout << "DEPT. : " << dept << endl;
     cout << "CGPA  : " << cgpa << endl;
-    cout<<"\n~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
+    cout << "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
 }
